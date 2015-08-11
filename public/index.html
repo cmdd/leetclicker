@@ -5,9 +5,11 @@
 
     <!-- TODO: Get rid of all these cdns and just dl the damn files! -->
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" id="bootstrap-stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/style.css">
     <link href='http://fonts.googleapis.com/css?family=Roboto+Mono' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="https://cdn.rawgit.com/nostalgiaz/bootstrap-switch/master/dist/css/bootstrap3/bootstrap-switch.css"></link>
   </head>
 
   <body>
@@ -30,7 +32,7 @@
           </ul>
           -->
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#" id="bytes-navbar">0 B</a></li>
+            <li><a href="#" id="bytes-navbar">0 B + 0 B/s</a></li>
           </ul>
         </div>
       </div>
@@ -124,13 +126,24 @@
           </ul>
         </div>
         <div role="tabpanel" class="tab-pane" id="terminal">..ter.</div>
-        <div role="tabpanel" class="tab-pane" id="settings">..ter.</div>
+        <div role="tabpanel" class="tab-pane" id="settings">
+          <input type="checkbox" name="check-system" checked data-on-text="SI" data-off-text="binary" data-off-color="success">
+          <button type="button" class="btn btn-default btn-block" id="test-css-switch">Become a hacker</button>
+          <div class="btn-group" data-toggle="buttons">
+            <label class="btn btn-primary active">
+              <input type="radio" name="options" id="radio-theme-default" autocomplete="off" checked> Default
+            </label>
+            <label class="btn btn-primary">
+              <input type="radio" name="options" id="radio-theme-hacker" autocomplete="off"> HACKER!!!
+            </label>
+          </div>
+        </div>
       </div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/js/bootstrap-switch.js"></script>
     <script src="/js/main.js"></script>
   </body>
 </html>

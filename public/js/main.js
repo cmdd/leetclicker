@@ -1,7 +1,9 @@
 // TODO: Single Game object?
 // TODO: SAVING!
 
-// TODO: Scoping to prevent changing values from
+// TODO: Scoping to prevent changing values from console
+
+// TODO: Event listeners (onclick) instead of inline js in html
 
 // js prototypes because js is stupid and awful
 Number.prototype.toFixedDown = function(digits) {
@@ -150,9 +152,9 @@ function addLog(text) {
 //       Check if true, give achievement.
 window.setInterval(function() {
   bpsCalc();
-  updateScreen(30);
+  updateScreen(10);
   // bytes += bps;
-}, 1000/30);
+}, 1000/10);
 
 // Temporary sanity check loop
 window.setInterval(function() {
@@ -230,6 +232,19 @@ $(function() {
   // $('[data-toggle="tooltip"]').tooltip();
 
   addLog("Welcome to leetclicker.");
+
+  $("[name='check-system']").bootstrapSwitch();
+
+  $('#radio-theme-default, #radio-theme-hacker').change(function() {
+    var stylesheets = {
+      "radio-theme-default": "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css",
+      "radio-theme-hacker": "http://brobin.github.io/hacker-bootstrap/css/hacker.css"
+    };
+
+    if (this.checked) {
+      $("#bootstrap-stylesheet").attr('href', stylesheets[this.id]);
+    }
+  });
 
   $("#navbar-brand, #bytes-navbar").click(function() {
     $("#nav-tabs a[href='#main']").tab('show');
