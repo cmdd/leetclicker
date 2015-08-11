@@ -1,9 +1,14 @@
 // TODO: Single Game object?
 // TODO: SAVING!
+//       Use LocalStorage for now, but rely on the server for all the relevant data later
 
 // TODO: Scoping to prevent changing values from console
 
 // TODO: Event listeners (onclick) instead of inline js in html
+
+// TODO: Make the binary/SI switch do something
+
+// TODO: Separate function for parsing bytes into human readable (eg. 14 kB)
 
 // js prototypes because js is stupid and awful
 Number.prototype.toFixedDown = function(digits) {
@@ -28,8 +33,6 @@ var systems = {
     "suffix": ["B", "KiB", "MiB"]
   }
 };
-
-var suffix = ["B", "kB", "MB"]
 
 // TODO: Should this be Object.create(null) instead?
 //       Should this be an object of objects? (eg. "a": {amount: 0, etc.})
@@ -99,6 +102,7 @@ function buyUpgrade(upgrade) {
 // TODO: Use value of Object to calculate amount per click
 function clickAdd() {
   bytes += 1;
+  bytesTotal += 1;
 }
 
 function bpsCalc() {
@@ -113,6 +117,7 @@ function bpsCalc() {
 function updateScreen(ups) {
   // NOTE: ups = updates per second
   bytes += bps / ups;
+  bytesTotal += bps / ups;
 
   // console.log(bytes);
 
