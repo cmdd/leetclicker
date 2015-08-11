@@ -18,13 +18,18 @@ var suffix = ["B", "kB", "MB"]
 
 // TODO: Should this be Object.create(null) instead?
 //       Should this be an object of objects? (eg. "a": {amount: 0, etc.})
+// TODO: Should flavor text (not description, in italics, usually humorous) be separate or part of desc?
 var buildings = {
   "a": {
+    "name": "meh",
+    "description": "An awful dial-up box. Pathetic.<br><em>Fun fact: The dial-up connection was create over 10,000 years ago, during a time when rms was a fledgling teenager.</em>",
     "amount": 0,
     "cost": 10,
     "bps": 1
   },
   "b": {
+    "name": "GTX 980 Ti",
+    "description": "I lied.",
     "amount": 0,
     "cost": 35,
     "bps": 10
@@ -97,8 +102,7 @@ function updateScreen(ups) {
   numSuffix = numSuffix >= suffix.length ? suffix.length - 1 : numSuffix
   var bySuffix = suffix[numSuffix];
 
-  $("#bytes").text((bytes / (Math.pow(1000, numSuffix) >= 1 ? Math.pow(1000, numSuffix) : 1)).toFixedDown(numSuffix === 0 ? 0 : 3));
-  $("#unit").text(bySuffix);
+  $("#bytes").text(((bytes / (Math.pow(1000, numSuffix) >= 1 ? Math.pow(1000, numSuffix) : 1)).toFixedDown(numSuffix === 0 ? 0 : 3)) + " " + bySuffix);
 
   var bpsNumSuffix = Math.floor(Math.log(bps) / Math.log(1000));
   bpsNumSuffix = bpsNumSuffix < 0 ? 0 : bpsNumSuffix;
@@ -106,6 +110,16 @@ function updateScreen(ups) {
   var bpsSuffix = suffix[bpsNumSuffix] + "/s";
 
   $("#bps").text(bps + " " + bpsSuffix);
+}
+
+// TODO: Different time format
+function addLog(text) {
+  var d = new Date();
+  var m = d.getMonth() + 1;
+  var date = m + "/" + d.getDate() + "/" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+
+  var text = "[<strong>" + date + "</strong>] " + text;
+  $("#log").prepend("<p>" + text + "</p>");
 }
 
 // TODO: Sanity checks at set intervals (either game update loop or game communicate loop)
@@ -129,15 +143,33 @@ window.setInterval(function() {
 
   for (var upgrade in upgrades) {
     var upgradeItem = upgrades[upgrade];
-    if (buildings[upgradeItem.target].amount > 0 && upgradeItem.bought === false && upgradeItem.bytesTotalRequired <= bytesTotal && $("#upgrade-list").find("#" + upgrade + "").length === 0) {
-      $("#upgrade-list").append('<li id="' + upgrade + '" class="list-group-item"><h4>' + upgradeItem.name + "</h4><p>" + upgradeItem.description + "</p></li>");
+    if (buildings[upgradeItem.target].amount > 0 && upgradeItem.bought === false && upgradeItem.bytesTotalRequired <= bytesTotal) {
+      if ($("#upgrade-list").find("#" + upgrade + "").length === 0){
+        $("#upgrade-list").append('<li id="' + upgrade + '" class="list-group-item"><h4 class="list-group-item-heading">' + upgradeItem.name + "</h4><p class=\"list-group-item-text\">" + upgradeItem.description + "</p><button id=\"" + upgrade + "-ub\" class=\"btn btn-default disabled\" onClick=\"buyUpgrade('" + upgrade + "')\">Buy this upgrade!</button></li>");
+      }
+
+      if (upgradeItem.cost <= bytes) {
+        $("#" + key + "-ub").removeClass("disabled").removeAttr("data-toggle title");
+      } else {
+
+        var bytesDiff = upgradeItem.cost - bytes;
+        var diffNumSuffix = Math.floor(Math.log(bytesDiff) / Math.log(1000));
+        diffNumSuffix = diffNumSuffix < 0 ? 0 : diffNumSuffix;
+        diffNumSuffix = diffNumSuffix >= suffix.length ? suffix.length - 1 : diffNumSuffix
+        var diffSuffix = suffix[diffNumSuffix];
+
+        var text = ((bytesDiff / (Math.pow(1000, diffNumSuffix) >= 1 ? Math.pow(1000, diffNumSuffix) : 1)).toFixedDown(diffNumSuffix === 0 ? 0 : 3)) + " " + diffSuffix;
+
+        $("#" + key + "-ub").addClass("disabled").attr("data-toggle", "tooltip").attr("title", "You're missing " + text);
+
+      }
     }
   }
 
   for (var key in buildings) {
     var value = buildings[key];
 
-    if (first === true || bought >= 5) {
+    if (first === true || (((value.hasOwnProperty("prevRequired") && value.amount >= value.prevRequired) && bought >= 5) || (((value.hasOwnProperty("prevRequired") && value.amount < value.prevRequired) && bought >= 5)))) {
       bought = value.amount;
       first = false;
     } else {
@@ -147,7 +179,21 @@ window.setInterval(function() {
     // console.log(key + ": " + value);
 
     if ($("#building-list").find("#" + key + "").length === 0) {
-      $("#building-list").append('<p id="' + key + '">Test</p>');
+      $("#building-list").append('<div class="building col-md-4" id="' + key + '"><h4>' + value.name + '</h4><p>' + value.description + '</p><button id="' + key + '-bb" type="button" class="btn btn-default disabled" onClick="buyBuilding(\'' + key + '\')">Buy it!</button></div>');
+    }
+
+    if (value.cost <= bytes) {
+      $("#" + key + "-bb").removeClass("disabled").removeAttr("data-toggle title");
+    } else {
+      var bytesDiff = value.cost - bytes;
+      var diffNumSuffix = Math.floor(Math.log(bytesDiff) / Math.log(1000));
+      diffNumSuffix = diffNumSuffix < 0 ? 0 : diffNumSuffix;
+      diffNumSuffix = diffNumSuffix >= suffix.length ? suffix.length - 1 : diffNumSuffix
+      var diffSuffix = suffix[diffNumSuffix];
+
+      var text = ((bytesDiff / (Math.pow(1000, diffNumSuffix) >= 1 ? Math.pow(1000, diffNumSuffix) : 1)).toFixedDown(diffNumSuffix === 0 ? 0 : 3)) + " " + diffSuffix;
+
+      $("#" + key + "-bb").addClass("disabled").attr("data-toggle", "tooltip").attr("title", "You're missing " + text);
     }
 
   }
@@ -159,3 +205,7 @@ window.setInterval(function () {
   TODO: communicate w/ server
 }, 1000);
 */
+
+$(function() {
+  addLog("Welcome to leetclicker.");
+});

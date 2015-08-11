@@ -5,6 +5,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Mono' rel='stylesheet' type='text/css'>
   </head>
 
   <body>
@@ -42,15 +43,75 @@
       <!-- Tab panes -->
       <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="main">
-          <h1 id="bytes">0</h1>
-          <h3 id="unit"></h3>
-          <h3 id="bps">0</h3>
-          <button type="button" class="btn btn-default" onClick="clickAdd()">This is a button</button>
-          <button type="button" class="btn btn-default" onClick="buyBuilding('a')">Buy building a</button>
-          <button type="button" class="btn btn-default" onClick="buyUpgrade('ramUpgrade')">RAM Upgrade</button>
+          <div id="main-info" class="col-md-6">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                Current info
+              </div>
+
+              <div class="panel-body">
+                <h2 id="bytes">0 B</h2>
+                <h3 id="bps">0 B/s</h3>
+              </div>
+            </div>
+            <button type="button" class="btn btn-default btn-block" onClick="clickAdd()">Download More RAM</button>
+          </div>
+          <div id="other-info" class="col-md-6">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                Welcome to leetclicker(tm)!
+              </div>
+
+              <div class="panel-body">
+                Hey there!<br>
+                Make sure to check out the <a data-toggle="collapse" data-target="#changelog-collapse" data-parent="#accordion">changelog</a> for all the newest updates.
+              </div>
+
+              <div class="panel-footer">
+                leetclicker 0.1.0 - 8/10/2015
+              </div>
+            </div>
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                  <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#log-collapse" aria-expanded="true" aria-controls="log-collapse">
+                      Log
+                    </a>
+                  </h4>
+                </div>
+                <div id="log-collapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                  <div id="log" class="panel-body">
+                    <!-- Stuff from the log will go here. -->
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                  <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#changelog-collapse" aria-expanded="false" aria-controls="changelog-collapse">
+                      Changelog
+                    </a>
+                  </h4>
+                </div>
+                <div id="changelog-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                  <div class="panel-body">
+                    <!-- Changelog goes here. -->
+                    <ul class="list-group">
+                      <li class="list-group-item">
+                        <h4 class="list-group-item-heading">0.1.0 - wat</h4>
+                        <p class="list-group-item-text">Initial release. Not much to say here.</p>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div role="tabpanel" class="tab-pane" id="buildings">
-          <div id="building-list"></div>
+          <div id="building-list" class="text-center">
+          </div>
         </div>
         <div role="tabpanel" class="tab-pane" id="upgrades">
           <ul id="upgrade-list" class="list-group">

@@ -1,1 +1,37 @@
+.building {
+  border: #dddddd solid 1px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
 
+  padding-bottom: 10px;
+}
+
+ul.nav[role="tablist"] {
+  margin-bottom: 10px;
+}
+
+.building + .building {
+  border-left: none;
+}
+
+#bytes {
+  margin-top: 0px;
+}
+
+#bps {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+#main-info {
+  padding-left: 0px;
+}
+
+#other-info {
+  padding-right: 0px;
+}
+
+body {
+  font-family: "Roboto Mono";
+}
