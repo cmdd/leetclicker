@@ -1,4 +1,5 @@
 // TODO: Single Game object?
+// TODO: SAVING!
 
 // TODO: Scoping to prevent changing values from
 
@@ -13,6 +14,19 @@ var bytes = 0;
 var bytesTotal = 0;
 
 var bps = 0;
+
+var useSystem = "SI";
+
+var systems = {
+  "SI": {
+    "base": 1000,
+    "suffix": ["B", "kB", "MB"]
+  },
+  "binary": {
+    "base": 1024,
+    "suffix": ["B", "KiB", "MiB"]
+  }
+};
 
 var suffix = ["B", "kB", "MB"]
 
@@ -110,13 +124,16 @@ function updateScreen(ups) {
   var bpsSuffix = suffix[bpsNumSuffix] + "/s";
 
   $("#bps").text(bps + " " + bpsSuffix);
+
+  $("#bytes-navbar").html("<strong>" + ((bytes / (Math.pow(1000, numSuffix) >= 1 ? Math.pow(1000, numSuffix) : 1)).toFixedDown(numSuffix === 0 ? 0 : 3)) + " " + bySuffix + "</strong> + " + bps + " " + bpsSuffix);
 }
 
 // TODO: Different time format
 function addLog(text) {
   var d = new Date();
   var m = d.getMonth() + 1;
-  var date = m + "/" + d.getDate() + "/" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+  var min = ('0' + d.getMinutes()).slice(-2);
+  var date = m + "/" + d.getDate() + "/" + d.getFullYear() + " " + d.getHours() + ":" + min + ":" + d.getSeconds();
 
   var text = "[<strong>" + date + "</strong>] " + text;
   $("#log").prepend("<p>" + text + "</p>");
@@ -207,5 +224,11 @@ window.setInterval(function () {
 */
 
 $(function() {
+  // $('[data-toggle="tooltip"]').tooltip();
+
   addLog("Welcome to leetclicker.");
+
+  $("#navbar-brand, #bytes-navbar").click(function() {
+    $("#nav-tabs a[href='#main']").tab('show');
+  });
 });

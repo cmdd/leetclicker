@@ -3,6 +3,8 @@
   <head>
     <title>AAAAAAAAAA</title>
 
+    <!-- TODO: Get rid of all these cdns and just dl the damn files! -->
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/style.css">
     <link href='http://fonts.googleapis.com/css?family=Roboto+Mono' rel='stylesheet' type='text/css'>
@@ -18,14 +20,17 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
+          <a id="navbar-brand" class="navbar-brand" href="#">leetclicker</a>
         </div>
 
         <div class="collapse navbar-collapse" id="nav-collapse">
+          <!--
           <ul class="nav navbar-nav">
             <li><a href="#">Bytes</a></li>
           </ul>
+          -->
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Other</a></li>
+            <li><a href="#" id="bytes-navbar">0 B</a></li>
           </ul>
         </div>
       </div>
@@ -33,11 +38,12 @@
 
     <div class="container">
       <!-- Nav tabs -->
-      <ul class="nav nav-pills" role="tablist">
+      <ul class="nav nav-pills" role="tablist" id="nav-tabs">
         <li role="presentation" class="active"><a href="#main" aria-controls="main" role="tab" data-toggle="pill">Main</a></li>
         <li role="presentation"><a href="#buildings" aria-controls="buildings" role="tab" data-toggle="pill">Buildings</a></li>
         <li role="presentation"><a href="#upgrades" aria-controls="upgrades" role="tab" data-toggle="pill">Upgrades</a></li>
         <li role="presentation"><a href="#terminal" aria-controls="terminal" role="tab" data-toggle="pill">Terminal</a></li>
+        <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="pill">Settings</a></li>
       </ul>
 
       <!-- Tab panes -->
@@ -54,7 +60,7 @@
                 <h3 id="bps">0 B/s</h3>
               </div>
             </div>
-            <button type="button" class="btn btn-default btn-block" onClick="clickAdd()">Download More RAM</button>
+            <button type="button" class="btn btn-default btn-block" onClick="clickAdd()">Download RAM</button>
           </div>
           <div id="other-info" class="col-md-6">
             <div class="panel panel-info">
@@ -115,14 +121,10 @@
         </div>
         <div role="tabpanel" class="tab-pane" id="upgrades">
           <ul id="upgrade-list" class="list-group">
-            <li class="list-group-item">
-              <h4>Ayy lamo!</h4>
-              <p>Fun fact: This has a description. Maybe I'll use templating to update this</p>
-              <p>A for loop, maybe.</p>
-            </li>
           </ul>
         </div>
         <div role="tabpanel" class="tab-pane" id="terminal">..ter.</div>
+        <div role="tabpanel" class="tab-pane" id="settings">..ter.</div>
       </div>
     </div>
 
