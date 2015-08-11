@@ -65,9 +65,12 @@
             <button type="button" class="btn btn-default btn-block" onClick="clickAdd()">Download RAM</button>
           </div>
           <div id="other-info" class="col-md-6">
-            <div class="panel panel-info">
+            <div id="welcome-panel" class="panel panel-info">
               <div class="panel-heading">
                 Welcome to leetclicker(tm)!
+                <button type="button" class="close" data-target="#welcome-panel" data-dismiss="alert">
+                  <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                </button>
               </div>
 
               <div class="panel-body">
@@ -127,15 +130,50 @@
         </div>
         <div role="tabpanel" class="tab-pane" id="terminal">..ter.</div>
         <div role="tabpanel" class="tab-pane" id="settings">
-          <input type="checkbox" name="check-system" checked data-on-text="SI" data-off-text="binary" data-off-color="success">
-          <button type="button" class="btn btn-default btn-block" id="test-css-switch">Become a hacker</button>
-          <div class="btn-group" data-toggle="buttons">
-            <label class="btn btn-primary active">
-              <input type="radio" name="options" id="radio-theme-default" autocomplete="off" checked> Default
-            </label>
-            <label class="btn btn-primary">
-              <input type="radio" name="options" id="radio-theme-hacker" autocomplete="off"> HACKER!!!
-            </label>
+          <div id="settings-col-1" class="col-md-6">
+            <div class="panel-group" id="settings-accordion-1" role="tablist" aria-multiselectable="true">
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="settings-head-1">
+                  <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#settings-accordion-1" href="#settings-collapse-1" aria-expanded="true" aria-controls="settings-collapse-1">
+                      Account
+                    </a>
+                  </h4>
+                </div>
+                <div id="settings-collapse-1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="settings-head-1">
+                  <div class="panel-body">
+                    <div class="alert alert-info" role="alert">
+                      <h4>All the hip incrementals have account systems...</h4>
+                      <p>Logging in lets you keep your data across computers! Just log in, and you're good to go!</p>
+                    </div>
+                    <a href="/login" class="btn btn-default">Login</a>
+                    <a href="/signup" class="btn btn-default">Sign up</a>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                  <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#settings-accordion-1" href="#settings-collapse-2" aria-expanded="false" aria-controls="settings-collapse-2">
+                      Other
+                    </a>
+                  </h4>
+                </div>
+                <div id="settings-collapse-2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                  <div class="panel-body">
+                    <input type="checkbox" name="check-system" checked data-on-text="SI" data-off-text="binary" data-off-color="success">
+                    <div class="btn-group" data-toggle="buttons">
+                      <label class="btn btn-primary active">
+                        <input type="radio" name="options" id="radio-theme-default" autocomplete="off" checked> Default
+                      </label>
+                      <label class="btn btn-primary">
+                        <input type="radio" name="options" id="radio-theme-hacker" autocomplete="off"> HACKER!!!
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
