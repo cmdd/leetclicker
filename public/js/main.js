@@ -9,6 +9,7 @@
 // TODO: Make the binary/SI switch do something
 
 // TODO: Separate function for parsing bytes into human readable (eg. 14 kB)
+//       If # is too big, use exponent form (1235e+5) via .toExponential()
 
 // js prototypes because js is stupid and awful
 Number.prototype.toFixedDown = function(digits) {
