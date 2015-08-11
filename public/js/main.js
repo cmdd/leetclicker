@@ -16,7 +16,6 @@ var bytesTotal = 0;
 var bps = 0;
 
 var useSystem = "SI";
-
 var systems = {
   "SI": {
     "base": 1000,
@@ -70,6 +69,10 @@ var upgrades = {
   }
 }
 
+function changeSystems(unit) {
+  useSystem = unit;
+}
+
 function buyBuilding(building) {
   var amount = buildings[building].amount;
   var cost = buildings[building].cost;
@@ -111,21 +114,21 @@ function updateScreen(ups) {
 
   // console.log(bytes);
 
-  var numSuffix = Math.floor(Math.log(bytes) / Math.log(1000));
+  var numSuffix = Math.floor(Math.log(bytes) / Math.log(systems[useSystem].base));
   numSuffix = numSuffix < 0 ? 0 : numSuffix;
-  numSuffix = numSuffix >= suffix.length ? suffix.length - 1 : numSuffix
-  var bySuffix = suffix[numSuffix];
+  numSuffix = numSuffix >= systems[useSystem].suffix.length ? systems[useSystem].suffix.length - 1 : numSuffix
+  var bySuffix = systems[useSystem].suffix[numSuffix];
 
-  $("#bytes").text(((bytes / (Math.pow(1000, numSuffix) >= 1 ? Math.pow(1000, numSuffix) : 1)).toFixedDown(numSuffix === 0 ? 0 : 3)) + " " + bySuffix);
+  $("#bytes").text(((bytes / (Math.pow(systems[useSystem].base, numSuffix) >= 1 ? Math.pow(systems[useSystem].base, numSuffix) : 1)).toFixedDown(numSuffix === 0 ? 0 : 3)) + " " + bySuffix);
 
-  var bpsNumSuffix = Math.floor(Math.log(bps) / Math.log(1000));
+  var bpsNumSuffix = Math.floor(Math.log(bps) / Math.log(systems[useSystem].base));
   bpsNumSuffix = bpsNumSuffix < 0 ? 0 : bpsNumSuffix;
-  bpsNumSuffix = numSuffix >= suffix.length ? suffix.length - 1 : bpsNumSuffix
-  var bpsSuffix = suffix[bpsNumSuffix] + "/s";
+  bpsNumSuffix = numSuffix >= systems[useSystem].suffix.length ? systems[useSystem].suffix.length - 1 : bpsNumSuffix
+  var bpsSuffix = systems[useSystem].suffix[bpsNumSuffix] + "/s";
 
   $("#bps").text(bps + " " + bpsSuffix);
 
-  $("#bytes-navbar").html("<strong>" + ((bytes / (Math.pow(1000, numSuffix) >= 1 ? Math.pow(1000, numSuffix) : 1)).toFixedDown(numSuffix === 0 ? 0 : 3)) + " " + bySuffix + "</strong> + " + bps + " " + bpsSuffix);
+  $("#bytes-navbar").html("<strong>" + ((bytes / (Math.pow(systems[useSystem].base, numSuffix) >= 1 ? Math.pow(systems[useSystem].base, numSuffix) : 1)).toFixedDown(numSuffix === 0 ? 0 : 3)) + " " + bySuffix + "</strong> + " + bps + " " + bpsSuffix);
 }
 
 // TODO: Different time format
@@ -170,12 +173,12 @@ window.setInterval(function() {
       } else {
 
         var bytesDiff = upgradeItem.cost - bytes;
-        var diffNumSuffix = Math.floor(Math.log(bytesDiff) / Math.log(1000));
+        var diffNumSuffix = Math.floor(Math.log(bytesDiff) / Math.log(systems[useSystem].base));
         diffNumSuffix = diffNumSuffix < 0 ? 0 : diffNumSuffix;
-        diffNumSuffix = diffNumSuffix >= suffix.length ? suffix.length - 1 : diffNumSuffix
-        var diffSuffix = suffix[diffNumSuffix];
+        diffNumSuffix = diffNumSuffix >= systems[useSystem].suffix.length ? systems[useSystem].suffix.length - 1 : diffNumSuffix
+        var diffSuffix = systems[useSystem].suffix[diffNumSuffix];
 
-        var text = ((bytesDiff / (Math.pow(1000, diffNumSuffix) >= 1 ? Math.pow(1000, diffNumSuffix) : 1)).toFixedDown(diffNumSuffix === 0 ? 0 : 3)) + " " + diffSuffix;
+        var text = ((bytesDiff / (Math.pow(systems[useSystem].base, diffNumSuffix) >= 1 ? Math.pow(systems[useSystem].base, diffNumSuffix) : 1)).toFixedDown(diffNumSuffix === 0 ? 0 : 3)) + " " + diffSuffix;
 
         $("#" + key + "-ub").addClass("disabled").attr("data-toggle", "tooltip").attr("title", "You're missing " + text);
 
@@ -203,12 +206,12 @@ window.setInterval(function() {
       $("#" + key + "-bb").removeClass("disabled").removeAttr("data-toggle title");
     } else {
       var bytesDiff = value.cost - bytes;
-      var diffNumSuffix = Math.floor(Math.log(bytesDiff) / Math.log(1000));
+      var diffNumSuffix = Math.floor(Math.log(bytesDiff) / Math.log(systems[useSystem].base));
       diffNumSuffix = diffNumSuffix < 0 ? 0 : diffNumSuffix;
-      diffNumSuffix = diffNumSuffix >= suffix.length ? suffix.length - 1 : diffNumSuffix
-      var diffSuffix = suffix[diffNumSuffix];
+      diffNumSuffix = diffNumSuffix >= systems[useSystem].suffix.length ? systems[useSystem].suffix.length - 1 : diffNumSuffix
+      var diffSuffix = systems[useSystem].suffix[diffNumSuffix];
 
-      var text = ((bytesDiff / (Math.pow(1000, diffNumSuffix) >= 1 ? Math.pow(1000, diffNumSuffix) : 1)).toFixedDown(diffNumSuffix === 0 ? 0 : 3)) + " " + diffSuffix;
+      var text = ((bytesDiff / (Math.pow(systems[useSystem].base, diffNumSuffix) >= 1 ? Math.pow(systems[useSystem].base, diffNumSuffix) : 1)).toFixedDown(diffNumSuffix === 0 ? 0 : 3)) + " " + diffSuffix;
 
       $("#" + key + "-bb").addClass("disabled").attr("data-toggle", "tooltip").attr("title", "You're missing " + text);
     }
