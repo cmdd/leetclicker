@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>This is the title xd</title>
+    <title>AAAAAAAAAA</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/style.css">
@@ -32,11 +32,11 @@
 
     <div class="container">
       <!-- Nav tabs -->
-      <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#main" aria-controls="main" role="tab" data-toggle="tab">Main</a></li>
-        <li role="presentation"><a href="#hardware" aria-controls="hardware" role="tab" data-toggle="tab">Buildings</a></li>
-        <li role="presentation"><a href="#upgrades" aria-controls="upgrades" role="tab" data-toggle="tab">Upgrades</a></li>
-        <li role="presentation"><a href="#terminal" aria-controls="terminal" role="tab" data-toggle="tab">Terminal</a></li>
+      <ul class="nav nav-pills" role="tablist">
+        <li role="presentation" class="active"><a href="#main" aria-controls="main" role="tab" data-toggle="pill">Main</a></li>
+        <li role="presentation"><a href="#buildings" aria-controls="buildings" role="tab" data-toggle="pill">Buildings</a></li>
+        <li role="presentation"><a href="#upgrades" aria-controls="upgrades" role="tab" data-toggle="pill">Upgrades</a></li>
+        <li role="presentation"><a href="#terminal" aria-controls="terminal" role="tab" data-toggle="pill">Terminal</a></li>
       </ul>
 
       <!-- Tab panes -->
@@ -44,12 +44,23 @@
         <div role="tabpanel" class="tab-pane active" id="main">
           <h1 id="bytes">0</h1>
           <h3 id="unit"></h3>
+          <h3 id="bps">0</h3>
           <button type="button" class="btn btn-default" onClick="clickAdd()">This is a button</button>
           <button type="button" class="btn btn-default" onClick="buyBuilding('a')">Buy building a</button>
           <button type="button" class="btn btn-default" onClick="buyUpgrade('ramUpgrade')">RAM Upgrade</button>
         </div>
-        <div role="tabpanel" class="tab-pane" id="hardware">...</div>
-        <div role="tabpanel" class="tab-pane" id="upgrades">...</div>
+        <div role="tabpanel" class="tab-pane" id="buildings">
+          <div id="building-list"></div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="upgrades">
+          <ul id="upgrade-list" class="list-group">
+            <li class="list-group-item">
+              <h4>Ayy lamo!</h4>
+              <p>Fun fact: This has a description. Maybe I'll use templating to update this</p>
+              <p>A for loop, maybe.</p>
+            </li>
+          </ul>
+        </div>
         <div role="tabpanel" class="tab-pane" id="terminal">..ter.</div>
       </div>
     </div>
