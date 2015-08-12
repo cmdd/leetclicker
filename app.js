@@ -17,6 +17,7 @@ var session      = require('express-session');
 var configDB = require('./config/database.js');
 
 mongoose.connect(configDB.url);
+var User            = require('./app/models/user');
 
 require('./config/passport')(passport);
 
@@ -32,7 +33,9 @@ app.set('view engine', 'ejs'); // set up ejs for templating
 app.set('views', path.join(__dirname, 'views'));
 
 // required for passport
-app.use(session({ secret: configDB.secret, saveUninitialized: true, resave: true })); // session secret
+var sessionMiddleware = session({ secret: configDB.secret, saveUninitialized: true, resave: true });
+
+app.use(sessionMiddleware); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
@@ -51,6 +54,38 @@ if (app.get('env') === 'development') {
     console.log(err);
   });
 }
+
+function isEmpty(obj) {
+  for(var prop in obj) {
+    if(obj.hasOwnProperty(prop))
+      return false;
+  }
+  return true;
+}
+
+var getKeys = function(obj){
+   var keys = [];
+   for(var key in obj){
+      keys.push(key);
+   }
+   return keys;
+}
+
+// socket.io stuff
+io.use(function(socket, next) {
+  sessionMiddleware(socket.request, {}, next);
+});
+
+io.on('connection', function(socket) {
+  if (isEmpty(socket.request.session.passport)) {
+    console.log("empty");
+  } else {
+    console.log(socket.request.session.passport.user);
+    User.findOne({"_id": socket.request.session.passport.user}, function(err, person) {
+      console.log(person.local.username);
+    });
+  }
+});
 
 server.listen(3000, function () {
   var host = server.address().address;

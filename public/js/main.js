@@ -271,3 +271,5 @@ $(function() {
     $("#nav-tabs a[href='#main']").tab('show');
   });
 });
+
+var socket = io();
