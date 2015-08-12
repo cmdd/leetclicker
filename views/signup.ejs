@@ -21,6 +21,17 @@
             <div class="alert alert-danger"><%= message %></div>
         <% } %>
 
+        <div class="alert alert-warning" role="alert">
+          <h4>Heads up!</h4>
+          <p>
+            While your password is hashed and salted before it's stored, keep in mind it's still being stored on a local database.
+            That being said, exercise caution when registering.
+          </p>
+          <p>
+            Don't use the same password here as you do on other sites, and use common sense.
+          </p>
+        </div>
+
         <!-- LOGIN FORM -->
         <form action="/signup" method="post">
             <div class="form-group">

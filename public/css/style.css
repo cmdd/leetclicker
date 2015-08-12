@@ -28,7 +28,7 @@ ul.nav[role="tablist"] {
   padding-left: 0px;
 }
 
-#other-info {
+#other-info, #settings-col-2 {
   padding-right: 0px;
 }
 

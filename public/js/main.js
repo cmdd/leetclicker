@@ -1,6 +1,7 @@
 // TODO: Single Game object?
 // TODO: SAVING!
 //       Use LocalStorage for now, but rely on the server for all the relevant data later
+//       Let a function handle this
 
 // TODO: Scoping to prevent changing values from console
 
@@ -12,6 +13,8 @@
 //       If # is too big, use exponent form (1235e+5) via .toExponential()
 
 // TODO: "Activity" function, takes a tab ("Main", etc) as an argument and flashes the bg color
+
+// TODO: If values are same (when updating), don't change (maybe)
 
 // js prototypes because js is stupid and awful
 Number.prototype.toFixedDown = function(digits) {

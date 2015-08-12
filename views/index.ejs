@@ -152,14 +152,16 @@
                 </div>
                 <div id="settings-collapse-1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="settings-head-1">
                   <div class="panel-body">
+                    <% if (username === false) { %>
                     <div class="alert alert-info" role="alert">
                       <h4>All the hip incrementals have account systems...</h4>
                       <p>Logging in lets you keep your data across computers! Just log in, and you're good to go!</p>
                     </div>
-                    <% if (username === false) { %>
                     <a href="/login" class="btn btn-default">Login</a>
                     <a href="/signup" class="btn btn-default">Sign up</a>
                     <% } else { %>
+                    <h4>Hey there :^)</h4>
+                    <p>You are currently logged in as <strong><%= username %></strong>. Your stats are being saved across machines, and you can participate in all the online stuff.</p>
                     <a href="/logout" class="btn btn-default">Log out</a>
                     <% } %>
                   </div>
@@ -184,6 +186,32 @@
                         <input type="radio" name="options" id="radio-theme-hacker" autocomplete="off"> HACKER!!!
                       </label>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="settings-col-2" class="col-md-6">
+            <div class="panel-group" id="settings-accordion-2" role="tablist" aria-multiselectable="true">
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="settings-head-3">
+                  <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#settings-accordion-2" href="#settings-collapse-3" aria-expanded="true" aria-controls="settings-collapse-3">
+                      Statistics
+                    </a>
+                  </h4>
+                </div>
+                <div id="settings-collapse-3" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="settings-head-3">
+                  <div class="panel-body">
+                    <ul class="list-group">
+                      <li class="list-group-item">
+                        <% if (username !== false) { %>
+                        <p>Logged in: <strong>yes</strong>. You are <strong><%= username %></strong></p>
+                        <% } else { %>
+                        <p>Logged in: <strong>no</strong></p>
+                        <% } %>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
