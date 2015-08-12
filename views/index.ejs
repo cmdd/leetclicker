@@ -42,7 +42,7 @@
       <!-- Nav tabs -->
       <ul class="nav nav-pills" role="tablist" id="nav-tabs">
         <li role="presentation" class="active"><a href="#main" aria-controls="main" role="tab" data-toggle="pill">Main</a></li>
-        <li role="presentation"><a href="#buildings" aria-controls="buildings" role="tab" data-toggle="pill">Buildings</a></li>
+        <li id="tab-buildings" role="presentation"><a href="#buildings" aria-controls="buildings" role="tab" data-toggle="pill">Buildings</a></li>
         <li role="presentation"><a href="#upgrades" aria-controls="upgrades" role="tab" data-toggle="pill">Upgrades</a></li>
         <li role="presentation"><a href="#terminal" aria-controls="terminal" role="tab" data-toggle="pill">Terminal</a></li>
         <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="pill">Settings</a></li>
@@ -65,6 +65,12 @@
             <button type="button" class="btn btn-default btn-block" onClick="clickAdd()">Download RAM</button>
           </div>
           <div id="other-info" class="col-md-6">
+            <% if (error) { %>
+            <div class="alert alert-danger alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <strong>Error!</strong> Already logged in! Please log out before attempting to log in again.
+            </div>
+            <% } %>
             <div id="welcome-panel" class="panel panel-info">
               <div class="panel-heading">
                 Welcome to leetclicker(tm)!
@@ -150,8 +156,12 @@
                       <h4>All the hip incrementals have account systems...</h4>
                       <p>Logging in lets you keep your data across computers! Just log in, and you're good to go!</p>
                     </div>
+                    <% if (username === false) { %>
                     <a href="/login" class="btn btn-default">Login</a>
                     <a href="/signup" class="btn btn-default">Sign up</a>
+                    <% } else { %>
+                    <a href="/logout" class="btn btn-default">Log out</a>
+                    <% } %>
                   </div>
                 </div>
               </div>

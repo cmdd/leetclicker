@@ -11,6 +11,8 @@
 // TODO: Separate function for parsing bytes into human readable (eg. 14 kB)
 //       If # is too big, use exponent form (1235e+5) via .toExponential()
 
+// TODO: "Activity" function, takes a tab ("Main", etc) as an argument and flashes the bg color
+
 // js prototypes because js is stupid and awful
 Number.prototype.toFixedDown = function(digits) {
   var re = new RegExp("(\\d+\\.\\d{" + digits + "})(\\d)"),
@@ -173,11 +175,11 @@ window.setInterval(function() {
     var upgradeItem = upgrades[upgrade];
     if (buildings[upgradeItem.target].amount > 0 && upgradeItem.bought === false && upgradeItem.bytesTotalRequired <= bytesTotal) {
       if ($("#upgrade-list").find("#" + upgrade + "").length === 0){
-        $("#upgrade-list").append('<li id="' + upgrade + '" class="list-group-item"><h4 class="list-group-item-heading">' + upgradeItem.name + "</h4><p class=\"list-group-item-text\">" + upgradeItem.description + "</p><button id=\"" + upgrade + "-ub\" class=\"btn btn-default disabled\" onClick=\"buyUpgrade('" + upgrade + "')\">Buy this upgrade!</button></li>");
+        $("#upgrade-list").append('<li id="' + upgrade + '" class="list-group-item"><h4 class="list-group-item-heading">' + upgradeItem.name + "</h4><p class=\"list-group-item-text\">" + upgradeItem.description + "</p><br /><button id=\"" + upgrade + "-ub\" class=\"btn btn-default disabled\" onClick=\"buyUpgrade('" + upgrade + "')\">Buy this upgrade!</button></li>");
       }
 
       if (upgradeItem.cost <= bytes) {
-        $("#" + key + "-ub").removeClass("disabled").removeAttr("data-toggle title");
+        $("#" + upgrade + "-ub").removeClass("disabled").removeAttr("data-toggle title");
       } else {
 
         var bytesDiff = upgradeItem.cost - bytes;
@@ -188,18 +190,28 @@ window.setInterval(function() {
 
         var text = ((bytesDiff / (Math.pow(systems[useSystem].base, diffNumSuffix) >= 1 ? Math.pow(systems[useSystem].base, diffNumSuffix) : 1)).toFixedDown(diffNumSuffix === 0 ? 0 : 3)) + " " + diffSuffix;
 
-        $("#" + key + "-ub").addClass("disabled").attr("data-toggle", "tooltip").attr("title", "You're missing " + text);
+        $("#" + upgrade + "-ub").addClass("disabled").attr("data-toggle", "tooltip").attr("title", "You're missing " + text);
 
       }
+    } else if (upgradeItem.bought === true && !($("#" + upgrade + "-ub").hasClass("disabled"))) {
+      $("#" + upgrade + "-ub").text("Bought!").addClass("disabled").attr("data-toggle", "tooltip").attr("title", "You've already bought this item!");
     }
   }
 
   for (var key in buildings) {
     var value = buildings[key];
 
-    if (first === true || (((value.hasOwnProperty("prevRequired") && value.amount >= value.prevRequired) && bought >= 5) || (((value.hasOwnProperty("prevRequired") && value.amount < value.prevRequired) && bought >= 5)))) {
+    if (first === true) {
       bought = value.amount;
       first = false;
+    } else if (value.hasOwnProperty("prevRequired")) {
+      if (bought >= value.prevRequired) {
+        bought = value.amount;
+      } else {
+        continue;
+      }
+    } else if (bought >= 5) {
+      bought = value.amount;
     } else {
       continue;
     }

@@ -20,24 +20,6 @@ mongoose.connect(configDB.url);
 
 require('./config/passport')(passport);
 
-// view engine setup
-// app.set('views', path.join(__dirname, 'views'));
-/*
-nunjucks.configure('views', {
-    autoescape: true,
-    express: app,
-    tags: {
-      blockStart: '<%',
-      blockEnd: '%>',
-      variableStart: '<$',
-      variableEnd: '$>',
-      commentStart: '<#',
-      commentEnd: '#>'
-    }
-});
-*/
-// async-each, readdirp are dependencies for nunjucks
-
 // Path for static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -66,6 +48,7 @@ if (app.get('env') === 'development') {
       message: err.message,
       error: err
     });
+    console.log(err);
   });
 }
 
