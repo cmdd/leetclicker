@@ -6,6 +6,12 @@ var userSchema = mongoose.Schema({
   local: {
     username     : String,
     password     : String,
+  },
+  buildings: [{name: String, amount: Number, _id:false}],
+  upgrades: [{name: String, bought: Boolean, _id:false}],
+  stats: {
+    bytes: Number,
+    bytesTotal: Number,
   }
 });
 

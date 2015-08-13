@@ -21,6 +21,9 @@ var User            = require('./app/models/user');
 
 require('./config/passport')(passport);
 
+// TODO: FORM VALIDATION!!
+// TODO: Redis "database" for currently logged in users/ddos, etc
+
 // Path for static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -78,12 +81,67 @@ io.use(function(socket, next) {
 
 io.on('connection', function(socket) {
   if (isEmpty(socket.request.session.passport)) {
-    console.log("empty");
+    io.to(socket.id).emit('auth-check', {'auth': 'no-auth', 'saveData': false});
   } else {
+    /* Example purposes only
     console.log(socket.request.session.passport.user);
     User.findOne({"_id": socket.request.session.passport.user}, function(err, person) {
-      console.log(person.local.username);
+      console.log(person);
     });
+    */
+    User.findById(socket.request.session.passport.user, function (err, user) {
+      if (err) console.log(err);
+
+      if (user.upgrades.length === 0 && user.buildings.length === 0) {
+        io.to(socket.id).emit('auth-check', {'auth': 'yes-auth', 'saveData': false});
+      } else {
+        io.to(socket.id).emit('auth-check', {'auth': 'yes-auth', 'saveData': true});
+      }
+
+    });
+
+    // Listen for anything here
+    socket.on('save game', function(data) {
+      User.findById(socket.request.session.passport.user, function (err, user) {
+        if (err) console.log(err);
+
+        user.stats.bytes = data.stats.bytes;
+        user.stats.bytesTotal = data.stats.bytesTotal;
+        user.buildings = data.buildings;
+        user.upgrades = data.upgrades;
+
+        user.save(function (err) {
+          if (err) console.log(err);
+        });
+      });
+    });
+
+    socket.on('load game', function() {
+      User.findById(socket.request.session.passport.user, function (err, user) {
+        if (err) console.log(err);
+
+        var buildingData = user.buildings;
+        var upgradeData = user.upgrades;
+        var statsData = user.stats;
+
+        io.to(socket.id).emit('load data', {'buildings': buildingData, 'upgrades': upgradeData, 'stats': statsData});
+      });
+    });
+
+    socket.on('wipe save', function() {
+      User.findById(socket.request.session.passport.user, function (err, user) {
+        if (err) console.log(err);
+
+        user.stats.bytes = 0;
+        user.stats.bytesTotal = 0;
+        user.buildings = [];
+        user.upgrades = [];
+
+        user.save(function (err) {
+          if (err) console.log(err);
+        });
+      });
+    })
   }
 });
 

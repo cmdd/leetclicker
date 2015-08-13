@@ -32,7 +32,7 @@
           </ul>
           -->
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#" id="bytes-navbar">0 B + 0 B/s</a></li>
+            <li id="bytes-nav-li"><a href="#" id="bytes-navbar">0 B + 0 B/s</a></li>
           </ul>
         </div>
       </div>
@@ -81,7 +81,7 @@
 
               <div class="panel-body">
                 Hey there!<br>
-                Make sure to check out the <a data-toggle="collapse" data-target="#changelog-collapse" data-parent="#accordion">changelog</a> for all the newest updates.
+                Make sure to check out the <a data-toggle="collapse" data-target="#news-collapse" data-parent="#accordion">recent news</a> for all the newest updates.
               </div>
 
               <div class="panel-footer">
@@ -106,15 +106,19 @@
               <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="headingTwo">
                   <h4 class="panel-title">
-                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#changelog-collapse" aria-expanded="false" aria-controls="changelog-collapse">
-                      Changelog
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#news-collapse" aria-expanded="false" aria-controls="news-collapse">
+                      News
                     </a>
                   </h4>
                 </div>
-                <div id="changelog-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                <div id="news-collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                   <div class="panel-body">
-                    <!-- Changelog goes here. -->
+                    <!-- News goes here. -->
                     <ul class="list-group">
+                      <li class="list-group-item">
+                        <h4 class="list-group-item-heading">0.4.0 - 8/12/2015</h4>
+                        <p class="list-group-item-text">Fully functional saving and loading, both remote and local.</p>
+                      </li>
                       <li class="list-group-item">
                         <h4 class="list-group-item-heading">0.3.0 - 8/12/2015</h4>
                         <p class="list-group-item-text">Started preliminary work on sockets. (the socket will know if you're logged in, and your credentials)</p>
@@ -216,6 +220,38 @@
                         <% } %>
                       </li>
                     </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="settings-head-4">
+                  <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#settings-accordion-2" href="#settings-collapse-4" aria-expanded="true" aria-controls="settings-collapse-4">
+                      Save/Load
+                    </a>
+                  </h4>
+                </div>
+                <div id="settings-collapse-4" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="settings-head-4">
+                  <div class="panel-body">
+                    <button type="button" class="btn btn-default btn-block" onClick="saveGame()">Save</button>
+                    <button type="button" class="btn btn-default btn-block" onClick="loadGame()">Load</button>
+                  </div>
+                </div>
+              </div>
+              <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="settings-head-5">
+                  <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#settings-accordion-2" href="#settings-collapse-5" aria-expanded="true" aria-controls="settings-collapse-5">
+                      Buttons you probably shouldn't press
+                    </a>
+                  </h4>
+                </div>
+                <div id="settings-collapse-5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="settings-head-5">
+                  <div class="panel-body">
+                    <!-- TODO: verify before deleting save -->
+                    <button type="button" class="btn btn-danger btn-block" onClick="deleteSave('local')">Delete Local Storage</button>
+                    <button type="button" class="btn btn-danger btn-block" onClick="deleteSave('remote')">Delete Remote Save</button>
+                    <button type="button" class="btn btn-danger btn-block" onClick="deleteSave('all')">Wipe Everything</button>
                   </div>
                 </div>
               </div>

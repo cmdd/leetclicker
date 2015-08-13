@@ -1,7 +1,6 @@
 // TODO: Single Game object?
-// TODO: SAVING!
-//       Use LocalStorage for now, but rely on the server for all the relevant data later
-//       Let a function handle this
+// TODO: AUTO-SAVING!
+//       Save time saved. (ie. add a "timeSaved" field to the save)
 
 // TODO: Scoping to prevent changing values from console
 
@@ -16,12 +15,20 @@
 
 // TODO: If values are same (when updating), don't change (maybe)
 
+// TODO: Make extra purchases of buildings not directly change the buildings object
+
+// TODO: Display cost (upgrades, buildings) and amount owned (buildings)
+
 // js prototypes because js is stupid and awful
 Number.prototype.toFixedDown = function(digits) {
   var re = new RegExp("(\\d+\\.\\d{" + digits + "})(\\d)"),
       m = this.toString().match(re);
   return m ? parseFloat(m[1]) : this.valueOf();
 };
+
+var socket = io();
+var authorized = "waiting";
+var remoteSave = "waiting";
 
 var bytes = 0;
 var bytesTotal = 0;
@@ -80,20 +87,130 @@ var upgrades = {
   }
 }
 
+// TODO: If person is authenticated, should it save to localstorage?
+// TODO: Server-side save
+function saveGame() {
+  var buildingArray = [];
+  var upgradeArray = [];
+  var stats = {
+    bytes: bytes,
+    bytesTotal: bytesTotal
+  };
+  for (var building in buildings) {
+    buildingArray.push({
+      name: building,
+      amount: buildings[building].amount
+    });
+  }
+  for (var upgrade in upgrades) {
+    upgradeArray.push({
+      name: upgrade,
+      bought: upgrades[upgrade].bought
+    });
+  }
+  if (authorized === true) {
+    socket.emit('save game', {'buildings': buildingArray, 'upgrades': upgradeArray, 'stats': stats});
+    addLog("Saved remotely.");
+  } else {
+    console.log(JSON.stringify(buildingArray));
+    localStorage.setItem('buildings', JSON.stringify(buildingArray));
+    localStorage.setItem('upgrades', JSON.stringify(upgradeArray));
+    localStorage.setItem('stats', JSON.stringify(stats));
+    addLog("Saved locally.");
+  }
+}
+
+// TODO: If person is being ddosed or whatever, prevent loading
+function loadGame() {
+  if (authorized === true && remoteSave === true) {
+    socket.emit('load game');
+
+    socket.on('load data', function(data) {
+      // why am I still using _Parsed for variable names, even though I'm not parsing anything?
+      // I'm lazy, that's why.
+      var buildingsParsed = data.buildings;
+      var upgradesParsed = data.upgrades;
+      var statsParsed = data.stats;
+
+      for (var building in buildings) {
+        for (var sb in buildingsParsed) {
+          if (buildingsParsed[sb].name === building) {
+            buildings[building].amount = buildingsParsed[sb].amount;
+          }
+        }
+      }
+      for (var upgrade in upgrades) {
+        for (var su in upgradesParsed) {
+          if (upgradesParsed[su].name === upgrade) {
+            upgrades[upgrade].bought = upgradesParsed[su].bought;
+          }
+        }
+      }
+      bytes = statsParsed.bytes;
+      bytesTotal = statsParsed.bytesTotal;
+
+      addLog("Successfully loaded a previous remote save.");
+    });
+  } else if (!(localStorage.buildings) && !(localStorage.upgrades) && !(localStorage.stats)) {
+    addLog("Load attempt failed: no save available.");
+  } else if (!(localStorage.buildings) || !(localStorage.upgrades) || !(localStorage.stats)) {
+    addLog("Load attempt failed: a part of the save is missing; save is corrupt.")
+  } else {
+    var buildingsParsed = JSON.parse(localStorage.getItem('buildings'));
+    var upgradesParsed = JSON.parse(localStorage.getItem('upgrades'));
+    var statsParsed = JSON.parse(localStorage.getItem('stats'));
+
+    for (var building in buildings) {
+      for (var sb in buildingsParsed) {
+        if (buildingsParsed[sb].name === building) {
+          buildings[building].amount = buildingsParsed[sb].amount;
+        }
+      }
+    }
+    for (var upgrade in upgrades) {
+      for (var su in upgradesParsed) {
+        if (upgradesParsed[su].name === upgrade) {
+          upgrades[upgrade].bought = upgradesParsed[su].bought;
+        }
+      }
+    }
+    bytes = statsParsed.bytes;
+    bytesTotal = statsParsed.bytesTotal;
+
+    addLog("Successfully loaded a previous local save.");
+  }
+}
+
+// TODO: Verification
+function deleteSave(location) {
+  switch(location) {
+    case "local":
+      localStorage.clear();
+      break;
+    case "remote":
+      socket.emit('wipe save');
+      break;
+    case "all":
+      localStorage.clear();
+      socket.emit('wipe save');
+      break;
+  }
+
+  // TODO: Should this not reload from cache (ie. use location.reload(true))?
+  window.location.reload();
+}
+
 function changeSystems(unit) {
   useSystem = unit;
 }
 
 function buyBuilding(building) {
   var amount = buildings[building].amount;
-  var cost = buildings[building].cost;
-  var newCost = Math.floor(cost * 1.1);
+  var cost = buildings[building].hasOwnProperty("costMulti") ? Math.floor(buildings[building].cost * Math.pow(buildings[building].costMulti, buildings[building].amount)) : Math.floor(buildings[building].cost * Math.pow(1.1, buildings[building].amount));
 
   if (bytes >= cost) {
     buildings[building].amount += 1;
     bytes -= cost;
-    // $("#bytes").text(bytes);
-    buildings[building].cost = newCost;
   }
 }
 
@@ -101,7 +218,7 @@ function buyUpgrade(upgrade) {
   if (upgrades[upgrade].bought === false && buildings[upgrades[upgrade].target].amount > 0) {
     upgrades[upgrade].bought = true;
     bytes -= upgrades[upgrade].cost;
-    buildings[upgrades[upgrade].target][2] *= upgrades[upgrade].upAmount;
+    // buildings[upgrades[upgrade].target].bps *= upgrades[upgrade].upAmount;
   }
 }
 
@@ -111,11 +228,20 @@ function clickAdd() {
   bytesTotal += 1;
 }
 
+// TODO: Account for special upgrades that don't directly affect building bps
 function bpsCalc() {
   // TODO: This calculates bps based on buildings
+  var buildingBps = 0;
   bps = 0;
   $.each(buildings, function(index, value) {
-    bps += value.amount * value.bps;
+    buildingBps = value.bps;
+    $.each(upgrades, function(ui, uv) {
+      var name = uv.target;
+      if (name === index && uv.bought === true) {
+        buildingBps *= uv.upAmount;
+      }
+    });
+    bps += value.amount * buildingBps;
   });
   // console.log(bps);
 }
@@ -149,7 +275,8 @@ function addLog(text) {
   var d = new Date();
   var m = d.getMonth() + 1;
   var min = ('0' + d.getMinutes()).slice(-2);
-  var date = m + "/" + d.getDate() + "/" + d.getFullYear() + " " + d.getHours() + ":" + min + ":" + d.getSeconds();
+  var sec = ('0' + d.getSeconds()).slice(-2);
+  var date = m + "/" + d.getDate() + "/" + d.getFullYear() + " " + d.getHours() + ":" + min + ":" + sec;
 
   var text = "[<strong>" + date + "</strong>] " + text;
   $("#log").prepend("<p>" + text + "</p>");
@@ -252,8 +379,6 @@ window.setInterval(function () {
 $(function() {
   // $('[data-toggle="tooltip"]').tooltip();
 
-  addLog("Welcome to leetclicker.");
-
   $("[name='check-system']").bootstrapSwitch();
 
   $('#radio-theme-default, #radio-theme-hacker').change(function() {
@@ -267,9 +392,37 @@ $(function() {
     }
   });
 
-  $("#navbar-brand, #bytes-navbar").click(function() {
+  $("#navbar-brand, #bytes-nav-li").click(function() {
     $("#nav-tabs a[href='#main']").tab('show');
   });
 });
 
-var socket = io();
+socket.on('auth-check', function(data) {
+  if (data.auth === "yes-auth") {
+    authorized = true;
+    if (data.saveData === true) {
+      remoteSave = true;
+
+    } else {
+      remoteSave = false;
+    }
+  } else {
+    authorized = false;
+  }
+  if (remoteSave === true && authorized === true) {
+    loadGame();
+    addLog("Welcome back to leetclicker. Your remote save has been restored.")
+  } else if (localStorage.getItem('buildings') !== null && localStorage.getItem('upgrades') !== null && localStorage.getItem('stats') !== null) {
+    loadGame();
+    addLog("Welcome back to leetclicker. Your local save has been restored.")
+  } else {
+    addLog("Welcome to leetclicker.");
+  }
+});
+
+setTimeout(function() {
+  if (authorized === "waiting") {
+    authorized = false;
+    remoteSave = false;
+  }
+}, 10000);
